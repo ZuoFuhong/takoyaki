@@ -134,6 +134,8 @@
 
 <script>
 import storage from "@/models/storage";
+import fileSaver from 'file-saver';
+import xlsx from 'xlsx';
 
 export default {
   name: "app",
@@ -234,7 +236,22 @@ export default {
       });
     },
     doExportRecords() {
-      // 导出项
+      // 导出当前页
+      let ws = xlsx.utils.json_to_sheet(this.tableData)
+      let wb = xlsx.utils.book_new()
+      xlsx.utils.book_append_sheet(wb, ws, 'sheet1')
+      let wb_out = xlsx.write(wb, { bookType: 'xlsx', type: 'array' });
+      try {
+        fileSaver.saveAs(
+          new Blob([wb_out], {
+            type: 'application/octet-stream'
+          }),
+          'sheet.xlsx'
+        )
+      } catch (e) {
+        console.log(e)
+        this.$message.error('导出失败，请按下 F12 查看控制台日志');
+      }
     },
     doDialogFormSave() {
       if (this.dialogFormTitle == "新增数据") {

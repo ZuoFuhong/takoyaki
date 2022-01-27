@@ -10,7 +10,9 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "element-ui": "^2.4.5",
-    "vue": "^2.6.11"
+    "file-saver": "^2.0.5",
+    "vue": "^2.6.11",
+    "xlsx": "^0.17.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
