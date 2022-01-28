@@ -5,26 +5,11 @@
         <!-- 搜索域 -->
         <el-row type="flex" justify="space-between">
           <el-form :inline="true" :model="query" size="small">
-            <el-form-item label="书名">
-              <el-input v-model="query.bookName" placeholder="书名"></el-input>
-            </el-form-item>
-            <el-form-item label="作者">
-              <el-input v-model="query.author" placeholder="作者"></el-input>
-            </el-form-item>
-            <el-form-item label="状态">
-              <el-select v-model="query.status" placeholder="状态">
-                <el-option label="上架" value="1"></el-option>
-                <el-option label="下架" value="0"></el-option>
-              </el-select>
+            <el-form-item v-for="field in searchField" :key="field.id" :label="field.fieldName">
+              <el-input v-model="query[field.column]" :placeholder="field.fieldName"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button
-                type="plain"
-                icon="el-icon-search"
-                size="small"
-                @click="onSearch"
-                >搜索</el-button
-              >
+              <el-button type="plain" icon="el-icon-search" size="small" @click="onSearch">搜索</el-button>
             </el-form-item>
           </el-form>
         </el-row>
@@ -61,27 +46,9 @@
         </el-row>
         <!-- 表格域 -->
         <el-row class="table-field">
-          <el-table
-            border
-            ref="singleTable"
-            :data="tableData"
-            highlight-current-row
-            style="width: 100%"
-            size="small"
-            @current-change="handleSelectChange"
-          >
+          <el-table border ref="singleTable" :data="tableData" highlight-current-row style="width: 100%" size="small" @current-change="handleSelectChange">
             <el-table-column type="index" width="50"></el-table-column>
-            <el-table-column prop="isbn" label="ISBN"></el-table-column>
-            <el-table-column prop="name" label="书名"></el-table-column>
-            <el-table-column prop="price" label="定价"></el-table-column>
-            <el-table-column prop="author" label="作者"></el-table-column>
-            <el-table-column prop="edition" label="版次"></el-table-column>
-            <el-table-column prop="press" label="出版社"></el-table-column>
-            <el-table-column
-              prop="address"
-              label="社址"
-              show-overflow-tooltip
-            ></el-table-column>
+            <el-table-column v-for="field in tableField" :key="field.id" :prop="field.column" :label="field.fieldName" show-overflow-tooltip></el-table-column> 
           </el-table>
         </el-row>
         <!-- 分页 -->
@@ -99,26 +66,8 @@
         <el-row type="flex" justify="start">
           <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible" custom-class="dialog-form">
             <el-form :model="dialogForm">
-              <el-form-item label="ISBN" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.isbn" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="书名" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.name" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="定价" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.price" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="作者" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.author" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="版次" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.edition" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="出版社" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.press" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="社址" :label-width="formLabelWidth">
-                <el-input v-model="dialogForm.address" autocomplete="off"></el-input>
+              <el-form-item v-for="field in tableField" :key="field.id" :label="field.fieldName" :label-width="formLabelWidth">
+                <el-input v-model="dialogForm[field.column]" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer">
@@ -141,13 +90,16 @@ export default {
   name: "app",
   data() {
     return {
+      // 搜索字段
+      searchField: [],
+      // 表格布局
+      tableField: [],
+      // 查询
       query: {
-        bookName: "",
-        author: "",
-        status: "",
         offset: 0,
         limit: 0,
       },
+      // 数据列表
       tableData: [],      
       // 分页
       currentPage: 1,
@@ -167,9 +119,27 @@ export default {
     }
   },
   async created() {
+    this.initLayout();
     await this.loadRecords();
   },
   methods: {
+    // 表格布局
+    initLayout() {
+      let fields = storage.columns();
+      let seq = 0;
+      for (var i = 0; i < fields.length; i++) {
+        let item  = fields[i];
+        let field = {
+          "id": ++seq,
+          "column": item.column,
+          "fieldName": item.fieldName
+        }
+        if (item["search"]) {
+          this.searchField.push(field)
+        }
+        this.tableField.push(field);
+      }
+    },
     async loadRecords() {
       // 计算分页偏移量
       this.query.offset = (this.currentPage - 1) * this.pageSize;
@@ -201,7 +171,6 @@ export default {
     },
     doEditRecord() {
       this.dialogFormTitle = "修改数据表单";
-      this.dialogFormVisible = true;
       if (this.currentRow == null) {
         this.$message({
           message: '请先选择要编译的项!',
@@ -211,6 +180,7 @@ export default {
       }
       // deep copy
       this.dialogForm = JSON.parse(JSON.stringify(this.currentRow));
+      this.dialogFormVisible = true;
     },
     doDeleleRecord() {
       if (this.currentRow == null) {
