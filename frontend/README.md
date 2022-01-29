@@ -1,4 +1,4 @@
-# takoyaki
+# takoyaki-frontend
 
 ## Project setup
 ```
