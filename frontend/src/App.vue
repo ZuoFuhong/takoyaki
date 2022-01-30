@@ -5,7 +5,7 @@
         <!-- 搜索域 -->
         <el-row type="flex" justify="space-between">
           <el-form :inline="true" :model="query" size="small">
-            <el-form-item v-for="field in searchField" :key="field.id" :label="field.fieldName">
+            <el-form-item v-for="field in searchField" :key="field._id" :label="field.fieldName">
               <el-input v-model="query[field.column]" :placeholder="field.fieldName"></el-input>
             </el-form-item>
             <el-form-item>
@@ -48,7 +48,7 @@
         <el-row class="table-field">
           <el-table border ref="singleTable" :data="tableData" highlight-current-row style="width: 100%" size="small" @current-change="handleSelectChange">
             <el-table-column type="index" width="50"></el-table-column>
-            <el-table-column v-for="field in tableField" :key="field.id" :prop="field.column" :label="field.fieldName" show-overflow-tooltip></el-table-column> 
+            <el-table-column v-for="field in tableField" :key="field._id" :prop="field.column" :label="field.fieldName" show-overflow-tooltip></el-table-column> 
           </el-table>
         </el-row>
         <!-- 分页 -->
@@ -66,7 +66,7 @@
         <el-row type="flex" justify="start">
           <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible" custom-class="dialog-form">
             <el-form :model="dialogForm">
-              <el-form-item v-for="field in tableField" :key="field.id" :label="field.fieldName" :label-width="formLabelWidth">
+              <el-form-item v-for="field in tableField" :key="field._id" :label="field.fieldName" :label-width="formLabelWidth">
                 <el-input v-model="dialogForm[field.column]" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import storage from "@/models/storage";
+import rest from "@/models/rest";
 import fileSaver from 'file-saver';
 import xlsx from 'xlsx';
 
@@ -99,8 +99,9 @@ export default {
         offset: 0,
         limit: 0,
       },
-      // 数据列表
-      tableData: [],      
+      // 数据
+      tableData: [],
+      recordTotal: 0,   
       // 分页
       currentPage: 1,
       pageSize: 10,
@@ -113,24 +114,20 @@ export default {
       dialogForm: {}
     };
   },
-  computed: {
-    recordTotal() {
-      return this.tableData.length
-    }
-  },
   async created() {
     this.initLayout();
     await this.loadRecords();
   },
   methods: {
     // 表格布局
-    initLayout() {
-      let fields = storage.columns();
+    async initLayout() {
+      let res = await rest.columns();
+      let fields = res.data;
       let seq = 0;
       for (var i = 0; i < fields.length; i++) {
         let item  = fields[i];
         let field = {
-          "id": ++seq,
+          "_id": ++seq,
           "column": item.column,
           "fieldName": item.fieldName
         }
@@ -144,8 +141,13 @@ export default {
       // 计算分页偏移量
       this.query.offset = (this.currentPage - 1) * this.pageSize;
       this.query.limit = this.pageSize;
-      let records = await storage.select(this.query);
-      this.tableData = records;
+      let res = await rest.select(this.query);
+      if (res.status != 200) {
+        this.$message.error('请检查网络，数据加载失败!');
+        return
+      }
+      this.tableData = res.data.list;
+      this.recordTotal = res.data.total;
     },
     async onSearch() {
       await this.loadRecords();
@@ -182,7 +184,7 @@ export default {
       this.dialogForm = JSON.parse(JSON.stringify(this.currentRow));
       this.dialogFormVisible = true;
     },
-    doDeleleRecord() {
+    async doDeleleRecord() {
       if (this.currentRow == null) {
         this.$message({
           message: '请先选择要删除的项!',
@@ -190,20 +192,26 @@ export default {
         });
         return
       }
-      this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
+      let res = await this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        let record = JSON.parse(JSON.stringify(this.currentRow))
-        storage.delete(record)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        // ignore catch
+      }).catch(function() {
+        // ignore
       });
+      if (res == "confirm") {
+        let record = JSON.parse(JSON.stringify(this.currentRow))
+        let res = await rest.delete(record)
+        if (res.status == 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        } else {
+          this.$message.error('删除失败');
+        }
+        await this.loadRecords();
+      }
     },
     doExportRecords() {
       // 导出当前页
@@ -223,12 +231,23 @@ export default {
         this.$message.error('导出失败，请按下 F12 查看控制台日志');
       }
     },
-    doDialogFormSave() {
+    async doDialogFormSave() {
+      let res = {};
       if (this.dialogFormTitle == "新增数据") {
-        storage.insert(this.dialogForm);
+        res = await rest.insert(this.dialogForm);
       } else {
-        storage.update(this.dialogForm);
+        res = await rest.update(this.dialogForm);
       }
+      if (res.status == 200) {
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        });
+      } else {
+        console.log(res)
+        this.$message.error('保存失败');
+      }
+      await this.loadRecords();
       this.dialogFormVisible = false;
     },
     doDialogFormCancel() {
