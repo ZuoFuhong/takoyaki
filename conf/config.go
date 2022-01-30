@@ -2,6 +2,7 @@ package conf
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"sync"
 )
@@ -49,55 +50,11 @@ func GetConfig() *Config {
 	return config
 }
 
-// loadConfigFile 加载自定义配置
+// loadConfigFile 加载配置文件
 func loadConfigFile() string {
-	return `
-{
-	"db": {
-		"addr": "127.0.0.1:3306",
-		"user": "root",
-		"pass": "123456",
-		"dbname": "takoyaki"
-	},
-	"tableName": "t_book",
-	"primaryKey": "id",
-	"fields": [
-		{
-			"column": "isbn",
-			"fieldName": "ISBN",
-			"search": true
-		},
-		{
-			"column": "name",
-			"fieldName": "书名",
-			"search": true
-		},
-		{
-			"column": "author",
-			"fieldName": "作者",
-			"search": true
-		},
-		{
-			"column": "price",
-			"fieldName": "定价"
-		},
-		{
-			"column": "edition",
-			"fieldName": "版次"
-		},
-		{
-			"column": "press",
-			"fieldName": "出版社"
-		},
-		{
-			"column": "address",
-			"fieldName": "社址"
-		},
-		{
-			"column": "create_time",
-			"fieldName": "创建时间"
-		}
-	]
-}
-`
+	bytes, err := ioutil.ReadFile("./conf/config.json")
+	if err != nil {
+		log.Panic(err)
+	}
+	return string(bytes)
 }
