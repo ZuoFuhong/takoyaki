@@ -12,7 +12,7 @@ func Test_Select(t *testing.T) {
 		t.Fatalf("call GetDb failed, err: %v", err)
 	}
 	records := make([]map[string]interface{}, 0)
-	if err := db.Debug().Table("t_book2").Offset(0).Limit(1).Find(&records).Error; err != nil {
+	if err := db.Debug().Table("t_book").Offset(0).Limit(1).Find(&records).Error; err != nil {
 		t.Fatalf("call db.Find failed, err: %v", err)
 	}
 	for k, v := range records[0] {
@@ -40,7 +40,7 @@ func Test_Create(t *testing.T) {
 	record["edition"] = "2013 年 6 月第 1 版"
 	record["press"] = "作家出版社"
 	record["address"] = "北京农展馆南里 10 号"
-	if err := db.Debug().Table("t_book2").Create(record).Error; err != nil {
+	if err := db.Debug().Table("t_book").Create(record).Error; err != nil {
 		t.Fatalf("call db.Create failed, err:%v", err)
 	}
 }
@@ -59,7 +59,7 @@ func Test_Update(t *testing.T) {
 	record["author"] = "豆豆"
 	record["price"] = 4800
 
-	if err := db.Debug().Table("t_book2").Where(conditions).Updates(record).Error; err != nil {
+	if err := db.Debug().Table("t_book").Where(conditions).Updates(record).Error; err != nil {
 		t.Fatalf("call db.update failed, err: %v", err)
 	}
 }
@@ -75,7 +75,7 @@ func Test_Delete(t *testing.T) {
 	conditions["price"] = "4800"
 
 	records := make([]map[string]interface{}, 0)
-	if err := db.Debug().Table("t_book2").Where(conditions).Delete(&records).Error; err != nil {
+	if err := db.Debug().Table("t_book").Where(conditions).Delete(&records).Error; err != nil {
 		t.Fatalf("call db.delete failed, err: %v", err)
 	}
 	fmt.Printf("records: %v", records)

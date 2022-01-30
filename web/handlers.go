@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"takoyaki/conf"
 	"takoyaki/defs"
 	"takoyaki/provider/dao"
@@ -12,13 +13,7 @@ import (
 
 // columnsHandle 查询表结构
 func columnsHandle(w http.ResponseWriter, r *http.Request) {
-	primaryKey := conf.GetConfig().PrimaryKey
 	fields := conf.GetConfig().Fields
-	// 隐式传入主键
-	fields = append(fields, &conf.Field{
-		Column:    primaryKey,
-		FieldName: "PrimaryKey",
-	})
 	SendNormalJsonResponse(w, fields)
 }
 
@@ -29,7 +24,7 @@ func selectHandle(w http.ResponseWriter, r *http.Request) {
 	params := make(map[string]interface{})
 	if err := decoder.Decode(&params); err != nil {
 		log.Printf("call decoder.Decode failed, err: %v", err)
-		SendErrorResponse(w, defs.ErrorInternalFaults)
+		SendErrorResponse(w, defs.ErrorRequestParamParseFailed)
 		return
 	}
 	// 2.提取分页参数
@@ -51,6 +46,11 @@ func selectHandle(w http.ResponseWriter, r *http.Request) {
 			switch vv := v.(type) {
 			case float64:
 				conditions[k] = int(vv)
+			case string:
+				vv = strings.TrimSpace(vv)
+				if len(vv) > 0 {
+					conditions[k] = vv
+				}
 			default:
 				conditions[k] = v
 			}
@@ -63,12 +63,20 @@ func selectHandle(w http.ResponseWriter, r *http.Request) {
 		SendErrorResponse(w, defs.ErrorInternalFaults)
 		return
 	}
-	// 5.按配置过滤回包
+	// 5.查数量
+	total, err := dao.Count(conditions)
+	if err != nil {
+		log.Printf("call dao.Count failed, err: %v", err)
+		SendErrorResponse(w, defs.ErrorInternalFaults)
+		return
+	}
+	// 6.按配置过滤回包
+	primaryKey := conf.GetConfig().PrimaryKey
 	voList := make([]map[string]interface{}, 0)
 	for _, record := range records {
 		vo := make(map[string]interface{})
 		for k, v := range record {
-			if _, ok := fieldMap[k]; ok {
+			if _, ok := fieldMap[k]; ok || k == primaryKey {
 				switch vt := v.(type) {
 				case time.Time:
 					// 格式化日期
@@ -80,8 +88,11 @@ func selectHandle(w http.ResponseWriter, r *http.Request) {
 		}
 		voList = append(voList, vo)
 	}
-	// 6.回包
-	SendNormalJsonResponse(w, voList)
+	// 7.回包
+	rsp := make(map[string]interface{})
+	rsp["total"] = total
+	rsp["list"] = voList
+	SendNormalJsonResponse(w, rsp)
 }
 
 // insertHandle 增加数据
@@ -91,7 +102,7 @@ func insertHandle(w http.ResponseWriter, r *http.Request) {
 	params := make(map[string]interface{})
 	if err := decoder.Decode(&params); err != nil {
 		log.Printf("call decoder.Decode failed, err: %v", err)
-		SendErrorResponse(w, defs.ErrorInternalFaults)
+		SendErrorResponse(w, defs.ErrorRequestParamParseFailed)
 		return
 	}
 	// 2.按配置过滤字段
@@ -124,7 +135,7 @@ func updateHandle(w http.ResponseWriter, r *http.Request) {
 	params := make(map[string]interface{})
 	if err := decoder.Decode(&params); err != nil {
 		log.Printf("call decoder.Decode failed, err: %v", err)
-		SendErrorResponse(w, defs.ErrorInternalFaults)
+		SendErrorResponse(w, defs.ErrorRequestParamParseFailed)
 		return
 	}
 	// 2.按配置过滤字段
@@ -182,7 +193,7 @@ func deleteHandle(w http.ResponseWriter, r *http.Request) {
 	params := make(map[string]interface{})
 	if err := decoder.Decode(&params); err != nil {
 		log.Printf("call decoder.Decode failed, err: %v", err)
-		SendErrorResponse(w, defs.ErrorInternalFaults)
+		SendErrorResponse(w, defs.ErrorRequestParamParseFailed)
 		return
 	}
 	// 2.按配置过滤字段

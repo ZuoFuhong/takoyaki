@@ -32,10 +32,9 @@ type Db struct {
 // 3. 字段的排序按照字段定义在列表中的顺序。
 // 4. 字段的值类型，目前仅支持字符串，若定义其它类型（如：数字、布尔）会产生非预期结果。
 type Field struct {
-	Column     string `json:"column"`     // 字段
-	FieldName  string `json:"fieldName"`  // 字段名
-	Search     bool   `json:"search"`     // 支持搜索，默认 false
-	SearchMode string `json:"searchMode"` // 搜索模式：like-模糊匹配 equal-精准匹配, 默认 equal
+	Column    string `json:"column"`    // 字段
+	FieldName string `json:"fieldName"` // 字段名
+	Search    bool   `json:"search"`    // 支持搜索，默认 false
 }
 
 // GetConfig 获取配置
@@ -66,22 +65,21 @@ func loadConfigFile() string {
 		{
 			"column": "isbn",
 			"fieldName": "ISBN",
-			"search": true,
-			"searchMode": "equal"
+			"search": true
 		},
 		{
 			"column": "name",
 			"fieldName": "书名",
-			"search": true,
-			"searchMode": "like"
+			"search": true
+		},
+		{
+			"column": "author",
+			"fieldName": "作者",
+			"search": true
 		},
 		{
 			"column": "price",
 			"fieldName": "定价"
-		},
-		{
-			"column": "author",
-			"fieldName": "作者"
 		},
 		{
 			"column": "edition",

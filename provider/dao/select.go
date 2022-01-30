@@ -21,3 +21,19 @@ func Select(conditions map[string]interface{}, offset, limit int) ([]map[string]
 	}
 	return records, nil
 }
+
+// Count 统计数量
+func Count(conditions map[string]interface{}) (int64, error) {
+	tableName := conf.GetConfig().TableName
+	db, err := mysql.GetDb()
+	if err != nil {
+		return 0, err
+	}
+
+	var total int64
+	if err := db.Debug().Table(tableName).Where(conditions).Count(&total).Error; err != nil {
+		log.Printf("call db.Count failed, err: %v", err)
+		return 0, err
+	}
+	return total, nil
+}
