@@ -3,6 +3,8 @@
 **takoyaki** 是一个通用的数据表格组件，只需少量的配置，无需人力开发，就可以快速生成一个常见的支持业务 “**增删改查**” 的 Web 管理平台。
 其受启发于业务场景，将常见的数据管理功能，抽离成通用的组件，目的是减少的重复开发工作，进一步帮助开发人员形成一种抽象的软件思维。
 
+Blog：https://www.cnblogs.com/marszuo/p/15858376.html
+
 ## 产品图
 
 ![render_pic.png](./docs/imgs/render_pic.png)
