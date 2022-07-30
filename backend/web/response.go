@@ -4,23 +4,35 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"takoyaki/defs"
 )
 
-func SendErrorResponse(w http.ResponseWriter, errResp defs.ErrResponse) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(errResp.HttpSC)
-	resStr, _ := json.Marshal(&errResp.Error)
-	_, _ = io.WriteString(w, string(resStr))
+// Result 统一的回包结构
+type Result struct {
+	Retcode int         `json:"retcode"`
+	Errmsg  string      `json:"errmsg"`
+	Data    interface{} `json:"data"`
 }
 
-func SendNormalJsonResponse(w http.ResponseWriter, body interface{}) {
-	bytes, _ := json.Marshal(body)
-	SendNormalResponse(w, string(bytes), http.StatusOK)
+// Ok 响应
+func Ok(w http.ResponseWriter, data interface{}) {
+	result := &Result{
+		Data: data,
+	}
+	writeToResponse(w, result)
 }
 
-func SendNormalResponse(w http.ResponseWriter, body string, sc int) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(sc)
-	_, _ = io.WriteString(w, body)
+// Error 响应
+func Error(w http.ResponseWriter, errcode int, errmsg string) {
+	result := &Result{
+		Retcode: errcode,
+		Errmsg:  errmsg,
+	}
+	writeToResponse(w, result)
+}
+
+func writeToResponse(w http.ResponseWriter, result *Result) {
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	retstr, _ := json.Marshal(&result)
+	_, _ = io.WriteString(w, string(retstr))
 }

@@ -6,9 +6,9 @@ import (
 )
 
 func main() {
-	server := web.NewServer(":8081", 100)
-	err := server.Run()
-	if err != nil {
-		log.Printf("server.Run err:%v", err)
+	log.SetFlags(log.Lshortfile | log.Ltime | log.Ldate)
+	s := web.NewServer()
+	if err := s.Serve(); err != nil {
+		log.Fatal(err)
 	}
 }
