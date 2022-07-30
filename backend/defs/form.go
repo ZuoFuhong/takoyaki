@@ -35,9 +35,10 @@ type PageColumn struct {
 }
 
 type PageSearchForm struct {
-	Name     string `json:"name"`
-	Page     int    `json:"page"`
-	PageSize int    `json:"page_size"`
+	Name       string `json:"name"`
+	DataSource string `json:"data_source"`
+	Page       int    `json:"page"`
+	PageSize   int    `json:"page_size"`
 }
 
 type SelectForm struct {

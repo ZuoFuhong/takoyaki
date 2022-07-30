@@ -54,7 +54,7 @@ func ListPage(form *defs.PageSearchForm) ([]*defs.PageForm, int, error) {
 		if err := json.Unmarshal(value, form); err != nil {
 			continue
 		}
-		if utils.Contains(df.Name, form.Name) {
+		if utils.Contains(df.Name, form.Name) && utils.Contains(df.DataSource, form.DataSource) {
 			dfList = append(dfList, df)
 		}
 	}
@@ -62,4 +62,9 @@ func ListPage(form *defs.PageSearchForm) ([]*defs.PageForm, int, error) {
 	total := len(dfList)
 	offset, endpos := utils.PagePos(total, form.Page, form.PageSize)
 	return dfList[offset:endpos], total, nil
+}
+
+// DeletePage delete a key from the bucket
+func DeletePage(pageName string) error {
+	return writeToDB(dsBucket, pageName, []byte(""))
 }

@@ -61,3 +61,8 @@ func ListDataSource(form *defs.DataSourceSearchForm) ([]*defs.DataSourceForm, in
 	offset, endpos := utils.PagePos(total, form.Page, form.PageSize)
 	return dfList[offset:endpos], total, nil
 }
+
+// DeleteDataSource delete a key from the bucket
+func DeleteDataSource(source string) error {
+	return writeToDB(dsBucket, source, []byte(""))
+}

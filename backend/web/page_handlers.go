@@ -40,3 +40,10 @@ func ListPage(w http.ResponseWriter, r *http.Request) {
 	}
 	Ok(w, data)
 }
+
+// DeletePage delete page
+func DeletePage(w http.ResponseWriter, r *http.Request) {
+	pageName := r.URL.Query().Get("page_name")
+	_ = bolt.DeletePage(pageName)
+	Ok(w, "ok")
+}

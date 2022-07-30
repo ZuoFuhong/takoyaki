@@ -40,3 +40,23 @@ func ListDataSource(w http.ResponseWriter, r *http.Request) {
 	}
 	Ok(w, data)
 }
+
+// DeleteDataSource delete data source
+func DeleteDataSource(w http.ResponseWriter, r *http.Request) {
+	source := r.URL.Query().Get("source")
+	// 1.check page usage
+	form := &defs.PageSearchForm{DataSource: source}
+	_, total, err := bolt.ListPage(form)
+	if err != nil {
+		log.Printf("call bolt.ListPage failed, err: %v\n", err)
+		Error(w, errcode.InternalServerError, "System busy")
+		return
+	}
+	if total > 0 {
+		Error(w, errcode.NotAllowedToDelete, "Not allowed to delete")
+		return
+	}
+	// 2.write to bolt
+	_ = bolt.DeleteDataSource(source)
+	Ok(w, "ok")
+}
