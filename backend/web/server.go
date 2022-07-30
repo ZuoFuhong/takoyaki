@@ -19,6 +19,10 @@ func NewServer() *Server {
 	}
 }
 
+func (s *Server) Register() {
+	s.router.registerHandler()
+}
+
 func (s *Server) Serve() error {
 	log.Printf("%s runs on http://%s\n", s.name, s.addr)
 	return http.ListenAndServe(s.addr, s.router)

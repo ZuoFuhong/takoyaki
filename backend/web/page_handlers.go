@@ -18,7 +18,13 @@ func AddPage(w http.ResponseWriter, r *http.Request) {
 		Error(w, errcode.BadRequestParam, "bad request")
 		return
 	}
-	// 2.write to bolt
+	// 2.check the data source is valid
+	_, err := bolt.GetDataSource(form.DataSource)
+	if err != nil {
+		Error(w, errcode.InvalidDataSource, "invalid data source")
+		return
+	}
+	// 3.write to bolt
 	_ = bolt.AddPage(form)
 	Ok(w, "ok")
 }

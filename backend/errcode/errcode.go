@@ -5,5 +5,7 @@ const (
 
 	NotAllowedToDelete = 40002
 
+	InvalidDataSource = 40003
+
 	InternalServerError = 50001
 )

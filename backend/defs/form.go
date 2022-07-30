@@ -31,7 +31,7 @@ type PageForm struct {
 type PageColumn struct {
 	ColumnName string `json:"column_name"`
 	FieldName  string `json:"field_name"`
-	Search     string `json:"search"`
+	Search     bool   `json:"search"`
 }
 
 type PageSearchForm struct {

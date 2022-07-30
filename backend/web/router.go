@@ -27,10 +27,10 @@ func (r *Router) registerHandler() {
 	r.Handle("/api/update", r.ch.ThenFunc(updateHandle)).Methods("PUT")
 	r.Handle("/api/delete", r.ch.ThenFunc(deleteHandle)).Methods("DELETE")
 	r.Handle("/api/datasources", r.ch.ThenFunc(ListDataSource)).Methods("GET")
-	r.Handle("/api/save_datasource", r.ch.ThenFunc(AddDataSource)).Methods("POST")
+	r.Handle("/api/datasource", r.ch.ThenFunc(AddDataSource)).Methods("POST")
 	r.Handle("/api/datasource", r.ch.ThenFunc(DeleteDataSource)).Methods("DELETE")
 	r.Handle("/api/pages", r.ch.ThenFunc(ListPage)).Methods("GET")
-	r.Handle("/api/save_page", r.ch.ThenFunc(AddPage)).Methods("POST")
+	r.Handle("/api/page", r.ch.ThenFunc(AddPage)).Methods("POST")
 	r.Handle("/api/page", r.ch.ThenFunc(DeletePage)).Methods("DELETE")
 	// static page
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./dist"))))

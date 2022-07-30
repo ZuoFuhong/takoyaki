@@ -48,7 +48,7 @@ func ListDataSource(form *defs.DataSourceSearchForm) ([]*defs.DataSourceForm, in
 	dfList := make([]*defs.DataSourceForm, 0)
 	for _, value := range values {
 		df := new(defs.DataSourceForm)
-		if err := json.Unmarshal(value, form); err != nil {
+		if err := json.Unmarshal(value, df); err != nil {
 			continue
 		}
 		// filter by keyword

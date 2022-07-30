@@ -62,5 +62,5 @@ func readAllFromDB(bucketName string) ([][]byte, error) {
 		values = append(values, v)
 		return nil
 	})
-	return values, err
+	return values, tx.Commit()
 }
