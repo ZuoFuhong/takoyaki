@@ -26,9 +26,9 @@ func AddDataSource(w http.ResponseWriter, r *http.Request) {
 // ListDataSource get data source list
 func ListDataSource(w http.ResponseWriter, r *http.Request) {
 	// 1.parse request params
-	form := new(defs.DataSourceSearchForm)
-	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		log.Printf("call decoder.Decode failed, err: %v", err)
+	query := r.URL.Query().Get("query")
+	form, err := defs.DecodeDataSourceQuery(query)
+	if err != nil {
 		Error(w, errcode.BadRequestParam, "bad request")
 		return
 	}

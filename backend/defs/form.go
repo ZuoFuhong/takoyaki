@@ -1,5 +1,11 @@
 package defs
 
+import (
+	"encoding/base64"
+	"encoding/json"
+	"log"
+)
+
 type DataSourceForm struct {
 	Name       string `json:"name"`
 	Host       string `json:"host"`
@@ -16,6 +22,21 @@ type DataSourceSearchForm struct {
 	Host     string `json:"host"`
 	Page     int    `json:"page"`
 	PageSize int    `json:"page_size"`
+}
+
+// DecodeDataSourceQuery decode request query param
+func DecodeDataSourceQuery(query string) (*DataSourceSearchForm, error) {
+	bytes, err := base64.StdEncoding.DecodeString(query)
+	if err != nil {
+		log.Printf("call base64 decode failed, err: %v\n", err)
+		return nil, err
+	}
+	form := new(DataSourceSearchForm)
+	if err := json.Unmarshal(bytes, form); err != nil {
+		log.Printf("call json.Unmarshal failed, err: %v\n", err)
+		return nil, err
+	}
+	return form, nil
 }
 
 type PageForm struct {
@@ -39,6 +60,21 @@ type PageSearchForm struct {
 	DataSource string `json:"data_source"`
 	Page       int    `json:"page"`
 	PageSize   int    `json:"page_size"`
+}
+
+// DecodePageSearchQuery decode request query param
+func DecodePageSearchQuery(query string) (*PageSearchForm, error) {
+	bytes, err := base64.StdEncoding.DecodeString(query)
+	if err != nil {
+		log.Printf("call base64 decode failed, err: %v\n", err)
+		return nil, err
+	}
+	form := new(PageSearchForm)
+	if err := json.Unmarshal(bytes, form); err != nil {
+		log.Printf("call json.Unmarshal failed, err: %v\n", err)
+		return nil, err
+	}
+	return form, nil
 }
 
 type SelectForm struct {

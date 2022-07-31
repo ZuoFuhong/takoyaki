@@ -32,9 +32,9 @@ func AddPage(w http.ResponseWriter, r *http.Request) {
 // ListPage get page list
 func ListPage(w http.ResponseWriter, r *http.Request) {
 	// 1.parse request params
-	form := new(defs.PageSearchForm)
-	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		log.Printf("call decoder.Decode failed, err: %v", err)
+	query := r.URL.Query().Get("query")
+	form, err := defs.DecodePageSearchQuery(query)
+	if err != nil {
 		Error(w, errcode.BadRequestParam, "bad request")
 		return
 	}
