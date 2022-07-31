@@ -16,6 +16,10 @@ class DataSource {
   async deleteDataSource(source) {
     return _delete(`/api/datasource?source=${source}`)
   }
+
+  async getAllDataSource() {
+    return get('/api/datasource_option')
+  }
 }
 
 export default new DataSource()

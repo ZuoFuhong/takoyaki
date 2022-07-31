@@ -1,30 +1,33 @@
-import {get, post} from "../utils/axios"
+import {get, post, put} from "../utils/axios"
+import {Base64} from 'js-base64'
 
 class Rest {
 
   // 加载数据结构
-  async columns() {
-    return get("/api/columns");
+  async columns(pageName) {
+    return get(`/api/columns?page_name=${pageName}`);
   }
 
   // 加载数据源适配器
-  async select(query) {
-    return post("/api/select", query)
+  async select(data) {
+    let raw = Base64.encode(JSON.stringify(data))
+    let query = encodeURIComponent(raw)
+    return get(`/api/select?query=${query}`)
   }
 
   // 添加一项
-  async insert(record) {
-    return post("/api/insert", record)
+  async insert(data) {
+    return post("/api/insert", data)
   }
 
-  // 编辑一项
-  async update(record) {
-    return post("/api/update", record)
+  // 更新一项
+  async update(data) {
+    return put("/api/update", data)
   }
 
   // 删除项
-  async delete(record) {
-    return post("/api/delete", record)
+  async delete(data) {
+    return put("/api/delete", data)
   }
 }
 

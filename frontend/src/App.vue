@@ -37,9 +37,9 @@ export default {
           name: "数据源"
         },
         {
-          path: "/datatable",
-          icon: "el-icon-document",
-          name: "数据表格"
+          path: "/page",
+          icon: "el-icon-tickets",
+          name: "页面配置"
         }
       ]
     }
