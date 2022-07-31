@@ -29,6 +29,7 @@ func (r *Router) registerHandler() {
 	r.Handle("/api/datasources", r.ch.ThenFunc(ListDataSource)).Methods("GET")
 	r.Handle("/api/datasource", r.ch.ThenFunc(AddDataSource)).Methods("POST")
 	r.Handle("/api/datasource", r.ch.ThenFunc(DeleteDataSource)).Methods("DELETE")
+	r.Handle("/api/datasource_option", r.ch.ThenFunc(ListDsOption)).Methods("GET")
 	r.Handle("/api/pages", r.ch.ThenFunc(ListPage)).Methods("GET")
 	r.Handle("/api/page", r.ch.ThenFunc(AddPage)).Methods("POST")
 	r.Handle("/api/page", r.ch.ThenFunc(DeletePage)).Methods("DELETE")

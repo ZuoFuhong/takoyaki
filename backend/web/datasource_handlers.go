@@ -41,6 +41,12 @@ func ListDataSource(w http.ResponseWriter, r *http.Request) {
 	Ok(w, data)
 }
 
+// ListDsOption get all data source
+func ListDsOption(w http.ResponseWriter, r *http.Request) {
+	sources := bolt.ListAllDataSource()
+	Ok(w, sources)
+}
+
 // DeleteDataSource delete data source
 func DeleteDataSource(w http.ResponseWriter, r *http.Request) {
 	source := r.URL.Query().Get("source")

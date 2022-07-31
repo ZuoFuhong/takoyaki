@@ -66,3 +66,20 @@ func ListDataSource(form *defs.DataSourceSearchForm) ([]*defs.DataSourceForm, in
 func DeleteDataSource(source string) error {
 	return writeToDB(dsBucket, source, []byte(""))
 }
+
+// ListAllDataSource get all data source
+func ListAllDataSource() []string {
+	values, err := readAllFromDB(dsBucket)
+	if err != nil {
+		return []string{}
+	}
+	dsList := make([]string, 0)
+	for _, value := range values {
+		df := new(defs.DataSourceForm)
+		if err := json.Unmarshal(value, df); err != nil {
+			continue
+		}
+		dsList = append(dsList, df.Name)
+	}
+	return dsList
+}
