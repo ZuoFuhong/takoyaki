@@ -7,41 +7,45 @@
 	},
 	"tableName": "t_book",
 	"primaryKey": "id",
-	"fields": [
+	"columns": [
 		{
-			"column": "isbn",
-			"fieldName": "ISBN",
+			"field_name": "isbn",
+			"column_name": "ISBN",
 			"search": true
 		},
 		{
-			"column": "name",
-			"fieldName": "书名",
+			"field_name": "name",
+			"column_name": "书名",
 			"search": true
 		},
 		{
-			"column": "author",
-			"fieldName": "作者",
+			"field_name": "author",
+			"column_name": "作者",
 			"search": true
 		},
 		{
-			"column": "price",
-			"fieldName": "定价"
+			"field_name": "price",
+			"column_name": "定价"
 		},
 		{
-			"column": "edition",
-			"fieldName": "版次"
+			"field_name": "edition",
+			"column_name": "版次"
 		},
 		{
-			"column": "press",
-			"fieldName": "出版社"
+			"field_name": "press",
+			"column_name": "出版社"
 		},
 		{
-			"column": "address",
-			"fieldName": "社址"
+			"field_name": "address",
+			"column_name": "社址"
 		},
 		{
-			"column": "create_time",
-			"fieldName": "创建时间"
+			"field_name": "create_time",
+			"column_name": "创建时间"
+		},
+		{
+			"field_name": "create_time",
+			"column_name": "更新时间"
 		}
 	]
 }

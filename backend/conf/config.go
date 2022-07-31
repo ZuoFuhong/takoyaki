@@ -16,7 +16,7 @@ type Config struct {
 	Db         Db       // Db配置
 	TableName  string   // 表名
 	PrimaryKey string   // 主键
-	Fields     []*Field // 展示的字段
+	columns    []*Field // 展示的字段
 }
 
 // Db 配置
@@ -33,9 +33,9 @@ type Db struct {
 // 3. 字段的排序按照字段定义在列表中的顺序。
 // 4. 字段的值类型，目前仅支持字符串，若定义其它类型（如：数字、布尔）会产生非预期结果。
 type Field struct {
-	Column    string `json:"column"`    // 字段
-	FieldName string `json:"fieldName"` // 字段名
-	Search    bool   `json:"search"`    // 支持搜索，默认 false
+	ColumnName string `json:"column_name"` // 字段名
+	FieldName  string `json:"field_name"`  // 表字段
+	Search     bool   `json:"search"`      // 支持搜索，默认 false
 }
 
 // GetConfig 获取配置
