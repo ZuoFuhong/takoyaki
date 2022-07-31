@@ -26,9 +26,9 @@ func columnsHandle(w http.ResponseWriter, r *http.Request) {
 // selectHandle dynamic select
 func selectHandle(w http.ResponseWriter, r *http.Request) {
 	// 1.parse request params
-	form := new(defs.SelectForm)
-	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		log.Printf("call decoder.Decode failed, err: %v", err)
+	query := r.URL.Query().Get("query")
+	form, err := defs.DecodeSelectQuery(query)
+	if err != nil {
 		Error(w, errcode.BadRequestParam, "bad request")
 		return
 	}
@@ -36,7 +36,7 @@ func selectHandle(w http.ResponseWriter, r *http.Request) {
 	records, total, err := mysql.Select(form)
 	if err != nil {
 		log.Printf("call mysql.Select failed, err: %v", err)
-		Error(w, errcode.InternalServerError, "系统繁忙")
+		Error(w, errcode.InternalServerError, err.Error())
 		return
 	}
 	// 3.render value type
@@ -73,7 +73,7 @@ func insertHandle(w http.ResponseWriter, r *http.Request) {
 	// 2.write db
 	if err := mysql.Insert(form); err != nil {
 		log.Printf("call mysql.Insert failed, err: %v", err)
-		Error(w, errcode.InternalServerError, "系统繁忙")
+		Error(w, errcode.InternalServerError, err.Error())
 		return
 	}
 	Ok(w, "ok")
@@ -91,7 +91,7 @@ func updateHandle(w http.ResponseWriter, r *http.Request) {
 	// 2.write db
 	if err := mysql.Update(form); err != nil {
 		log.Printf("call mysql.Update failed, err: %v", err)
-		Error(w, errcode.InternalServerError, "系统繁忙")
+		Error(w, errcode.InternalServerError, err.Error())
 		return
 	}
 	Ok(w, "ok")
@@ -109,7 +109,7 @@ func deleteHandle(w http.ResponseWriter, r *http.Request) {
 	// 2.write db
 	if err := mysql.Delete(form); err != nil {
 		log.Printf("call mysql.Delete failed, err: %v", err)
-		Error(w, errcode.InternalServerError, "系统繁忙")
+		Error(w, errcode.InternalServerError, err.Error())
 		return
 	}
 	Ok(w, "ok")

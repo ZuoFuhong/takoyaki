@@ -17,8 +17,8 @@ func Update(form *defs.UpdateForm) error {
 	if err != nil {
 		return err
 	}
-	conditions := map[string]string{
-		page.PrimaryKey: form.PrimaryKeyId,
+	conditions := map[string]interface{}{
+		page.PrimaryKey: form.Record[page.PrimaryKey],
 	}
 	delete(form.Record, page.PrimaryKey)
 	if err := db.Table(tableName).Where(conditions).Updates(form.Record).Error; err != nil {

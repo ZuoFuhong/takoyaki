@@ -17,8 +17,8 @@ func Delete(form *defs.DeleteForm) error {
 	if err != nil {
 		return err
 	}
-	conditions := map[string]string{
-		page.PrimaryKey: form.PrimaryKeyId,
+	conditions := map[string]interface{}{
+		page.PrimaryKey: form.Record[page.PrimaryKey],
 	}
 	empty := make(map[string]interface{})
 	if err := db.Debug().Table(tableName).Where(conditions).Delete(empty).Limit(1).Error; err != nil {

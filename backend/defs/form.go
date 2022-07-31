@@ -84,18 +84,32 @@ type SelectForm struct {
 	PageSize   int               `json:"page_size"`
 }
 
+// DecodeSelectQuery decode select query param
+func DecodeSelectQuery(query string) (*SelectForm, error) {
+	bytes, err := base64.StdEncoding.DecodeString(query)
+	if err != nil {
+		log.Printf("call base64 decode failed, err: %v\n", err)
+		return nil, err
+	}
+	form := new(SelectForm)
+	if err := json.Unmarshal(bytes, form); err != nil {
+		log.Printf("call json.Unmarshal failed, err: %v\n", err)
+		return nil, err
+	}
+	return form, nil
+}
+
 type InsertForm struct {
-	PageName string            `json:"page_name"`
-	Record   map[string]string `json:"record"`
+	PageName string                 `json:"page_name"`
+	Record   map[string]interface{} `json:"record"`
 }
 
 type UpdateForm struct {
-	PageName     string            `json:"page_name"`
-	PrimaryKeyId string            `json:"primary_key_id"`
-	Record       map[string]string `json:"record"`
+	PageName string                 `json:"page_name"`
+	Record   map[string]interface{} `json:"record"`
 }
 
 type DeleteForm struct {
-	PageName     string `json:"page_name"`
-	PrimaryKeyId string `json:"primary_key_id"`
+	PageName string                 `json:"page_name"`
+	Record   map[string]interface{} `json:"record"`
 }

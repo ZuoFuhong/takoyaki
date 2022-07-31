@@ -19,6 +19,7 @@ func Insert(form *defs.InsertForm) error {
 	}
 	if err := db.Table(tableName).Create(form.Record).Error; err != nil {
 		log.Printf("call insert table failed, err:%v", err)
+		return err
 	}
-	return err
+	return nil
 }
