@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <el-row>
-        <div class="logo-field">
+        <div class="logo-field" v-on:click="doLogoLink">
           <img class="logo-img" src="@/assets/logo.png"/>
           <p class="proj-name">Takoyaki</p>
         </div>
@@ -57,6 +57,9 @@ export default {
     },
     backToHomePage() {
       this.$router.push('/')
+    },
+    doLogoLink() {
+      window.location.href = '/'
     }
   }
 }
@@ -90,13 +93,13 @@ body {
       text-align: center;
       text-indent: 4px;
     }
-    .proj-name:hover {
-      cursor: pointer;
-    }
     .logo-img {
       width: 44px;
       height: 44px;
     }
+  }
+  .logo-field:hover{
+    cursor: pointer;
   }
 }
 .el-aside {
