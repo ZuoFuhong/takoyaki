@@ -1,0 +1,51 @@
+{
+    "db": {
+        "addr": "127.0.0.1:3306",
+        "user": "root",
+        "pass": "123456",
+        "dbname": "takoyaki"
+    },
+    "tableName": "t_book",
+    "primaryKey": "id",
+    "columns": [
+        {
+            "field_name": "isbn",
+            "column_name": "ISBN",
+            "search": true
+        },
+        {
+            "field_name": "name",
+            "column_name": "书名",
+            "search": true
+        },
+        {
+            "field_name": "author",
+            "column_name": "作者",
+            "search": true
+        },
+        {
+            "field_name": "price",
+            "column_name": "定价"
+        },
+        {
+            "field_name": "edition",
+            "column_name": "版次"
+        },
+        {
+            "field_name": "press",
+            "column_name": "出版社"
+        },
+        {
+            "field_name": "address",
+            "column_name": "社址"
+        },
+        {
+            "field_name": "create_time",
+            "column_name": "创建时间"
+        },
+        {
+            "field_name": "update_time",
+            "column_name": "更新时间"
+        }
+    ]
+}
