@@ -11,7 +11,8 @@ Blog：https://www.cnblogs.com/marszuo/p/15858376.html
 
 ## 演示视频
 
-Todo:
+- 腾讯课堂：https://ke.qq.com/video/387702304101864266
+- B 站视频：https://www.bilibili.com/video/BV1Ud4y1U7iv
 
 ## 部署
 
