@@ -1,4 +1,10 @@
-# takoyaki
+<div align=center><img width="120" height="120" src="./docs/imgs/logo.png"></div>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
+  <a href="#"><img src="https://img.shields.io/badge/version-v0.2.0-blue" alt="Version"></a>
+  <a href="#"><img src="https://img.shields.io/badge/license-Apache%202-blue" alt="License"></a>
+</p>
 
 **takoyaki** 是一个通用的数据表格组件，0 配置，开箱即用。支持快速生成可视化管理平台，对数据表进行基本的 “**增删改查**”。
 其受启发于业务场景，将常见的数据管理功能，抽离成通用的组件，目的是减少的重复开发工作，进一步帮助开发人员形成一种抽象的软件思维。
